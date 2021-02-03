@@ -1,0 +1,1 @@
+insert into t_user(telephone, username, create_time) value ('13584099554', '海王', now());

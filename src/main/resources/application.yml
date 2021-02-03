@@ -1,0 +1,28 @@
+envName:
+  $[envName]
+spring:
+  profiles:
+    active: $[env.profile]
+  application:
+    name: fim-sso
+  datasource:
+    username: root
+    password: root.123
+    url: jdbc:mysql://localhost:3306/fim?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+    schema: classpath:schema.sql
+    data: classpath:data.sql
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 1000
+    lettuce:
+      pool:
+        max-wait: 10000
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.yytxdy.fim.sso.entity
+server:
+  port: $[server.port]
