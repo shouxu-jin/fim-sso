@@ -3,8 +3,9 @@ package com.yytxdy.fim.sso.controller;
 import com.yytxdy.fim.sso.entity.User;
 import com.yytxdy.fim.sso.exceptions.DuplicatedSMSException;
 import com.yytxdy.fim.sso.exceptions.InvalidVerificationCodeException;
-import com.yytxdy.fim.sso.mapper.UserMapper;
 import com.yytxdy.fim.sso.service.SMSService;
+import com.yytxdy.fim.sso.service.UserService;
+import com.yytxdy.fim.sso.service.VerificationCodeGenerator;
 import com.yytxdy.fim.sso.vo.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/sso")
 public class SsoController extends BaseController {
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
     @Autowired
     private RedisTemplate<String, Serializable> redisTemplate;
     @Autowired
     private SMSService smsService;
+    @Autowired
+    private VerificationCodeGenerator verificationCodeGenerator;
 
     @RequestMapping("/login")
     public Result login(@RequestParam String telephone, @RequestParam String verificationCode) {
@@ -35,7 +38,7 @@ public class SsoController extends BaseController {
         }
         User user = new User();
         user.setTelephone(telephone);
-        userMapper.save(user);
+        userService.save(user);
         String token = UUID.randomUUID().toString();
         redisTemplate.boundValueOps(telephone).set(token, 30, TimeUnit.DAYS);
         return Result.ok().put("token", token);
@@ -43,7 +46,7 @@ public class SsoController extends BaseController {
 
     @RequestMapping("/sendVerificationCode")
     public Result sendVerificationCode(@RequestParam String telephone) {
-        int verificationCode = (int) ((Math.random() * 9 + 1) * 100000);
+        String verificationCode = verificationCodeGenerator.generate();
         if (null != redisTemplate.boundValueOps(telephone + "-verification-done").get()) {
             return Result.error(new DuplicatedSMSException());
         }
