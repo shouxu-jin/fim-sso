@@ -3,17 +3,17 @@ package com.yytxdy.fim.sso.entity;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private int id;
+    private Long telephone;
     private String username;
-    private String telephone;
     private String avatar;
+    private String createTime;
 
-    public int getId() {
-        return id;
+    public Long getTelephone() {
+        return telephone;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTelephone(Long telephone) {
+        this.telephone = telephone;
     }
 
     public String getUsername() {
@@ -24,19 +24,19 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
     public String getAvatar() {
         return avatar;
     }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

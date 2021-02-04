@@ -31,7 +31,7 @@ public class SsoController extends BaseController {
     private VerificationCodeGenerator verificationCodeGenerator;
 
     @RequestMapping("/login")
-    public Result login(@RequestParam String telephone, @RequestParam String verificationCode) {
+    public Result login(@RequestParam Long telephone, @RequestParam String verificationCode) {
         String verificationCodeInRedis = (String) redisTemplate.boundValueOps(telephone + "-verification").get();
         if (!StringUtils.equals(verificationCode, verificationCodeInRedis)) {
             throw new InvalidVerificationCodeException(verificationCode);
@@ -40,7 +40,7 @@ public class SsoController extends BaseController {
         user.setTelephone(telephone);
         userService.save(user);
         String token = UUID.randomUUID().toString();
-        redisTemplate.boundValueOps(telephone).set(token, 30, TimeUnit.DAYS);
+        redisTemplate.boundValueOps(String.valueOf(telephone)).set(token, 30, TimeUnit.DAYS);
         return Result.ok().put("token", token);
     }
 
